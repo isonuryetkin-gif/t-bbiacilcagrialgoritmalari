@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>112 Eğitim Sistemi</title>
+<title>112 Eğitim & Düello</title>
 <style>
   :root {
     --primary-color: #003366; 
@@ -73,7 +73,9 @@
     box-sizing: border-box;
   }
 
-  .sayfa.aktif { display: flex; }
+  .sayfa.aktif {
+    display: flex;
+  }
 
   /* --- MENU --- */
   .menu-grid {
@@ -99,6 +101,7 @@
     align-items: center;
     min-height: 70px;
   }
+
   .menu-item:active { transform: scale(0.98); }
   .menu-baslik { font-weight: 700; color: var(--primary-color); font-size: 13px; line-height: 1.2; }
   .menu-sayi { font-size: 10px; color: #7f8c8d; margin-top: 3px; }
@@ -167,6 +170,7 @@
     display: flex;
     flex-direction: column;
   }
+
   .konu-basligi {
     font-size: 13px;
     color: #7f8c8d;
@@ -175,6 +179,7 @@
     font-weight: 700;
     text-align: center;
   }
+
   .sahne {
     width: 100%;
     flex: 1;
@@ -183,6 +188,7 @@
     margin-bottom: 10px;
     min-height: 200px;
   }
+
   .kart {
     width: 100%;
     height: 100%;
@@ -192,7 +198,9 @@
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0,51,102,0.1);
   }
+
   .kart.cevrildi { transform: rotateY(180deg); }
+
   .kart-yuzu {
     position: absolute;
     width: 100%;
@@ -212,6 +220,7 @@
     background: white;
     overflow-y: auto;
   }
+
   .kart-on { border-top: 5px solid var(--primary-color); color: var(--primary-color); }
   .kart-arka { background: var(--primary-color); color: white; transform: rotateY(180deg); border-top: 5px solid var(--accent-color); }
   
@@ -229,6 +238,7 @@
     width: 100%;
     padding: 5px 0;
   }
+
   .btn {
     background-color: white; color: var(--primary-color); border: 2px solid var(--primary-color);
     padding: 8px 16px; border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 12px;
@@ -247,6 +257,7 @@
     gap: 10px;
     height: 100%;
   }
+
   .ilerleme-bar-kapsayici {
     width: 100%;
     height: 6px;
@@ -256,12 +267,14 @@
     margin-bottom: 2px;
     flex-shrink: 0;
   }
+  
   .ilerleme-bar-dolgu {
     height: 100%;
     background-color: var(--success-color);
     width: 0%;
     transition: width 0.3s ease;
   }
+
   .test-header {
     display: flex;
     justify-content: space-between;
@@ -273,6 +286,7 @@
     font-size: 12px;
     flex-shrink: 0;
   }
+
   .skor-badge {
     font-weight: 700;
     padding: 4px 8px;
@@ -300,6 +314,7 @@
     text-align: center;
     flex-shrink: 0;
   }
+
   .siklar-listesi {
     display: flex;
     flex-direction: column;
@@ -308,6 +323,7 @@
     flex: 1;
     padding-bottom: 10px;
   }
+
   .sik-btn {
     background: white;
     border: 1px solid #e0e0e0;
@@ -320,6 +336,7 @@
     transition: all 0.2s;
     font-weight: 500;
   }
+
   .sik-btn:active { transform: scale(0.98); background-color: #f9f9f9; }
   .sik-btn.dogru { background-color: var(--success-color); color: white; border-color: var(--success-color); }
   .sik-btn.yanlis { background-color: var(--accent-color); color: white; border-color: var(--accent-color); }
@@ -338,6 +355,7 @@
     margin-top: 20px;
   }
   .sonuc-puan { font-size: 40px; font-weight: 800; color: var(--primary-color); }
+
 </style>
 </head>
 <body>
@@ -438,8 +456,8 @@
 </div>
 
 <script>
-// --- VERİ SETİ (64 SORU) ---
-const hamVeri = [
+  // --- VERİ SETİ (64 SORU) ---
+  const hamVeri = [
     { kategori: "Çağrı Yönetimi", soru: "Çağrı Açılış Algoritması'na göre, çağrı alıcının teyit etmesi gereken iki temel bilgi nedir?", cevap: "Olay yeri adresi ve arayanın telefon numarası.", yanlislar: ["Hastanın adı ve soyadı.", "Olayın tıbbi detayı ve hasta yaşı.", "En yakın karakol ve itfaiye bilgisi."] },
     { kategori: "Çağrı Yönetimi", soru: "Çağrı Açılış Algoritması'nda, arayan kişi adresini bilmiyorsa ona yardımcı olmak için hangi yöntemler sorgulanabilir?", cevap: "Posta adresi için fatura sorgulama, bilindik cami, market, okul, cadde, kavşak gibi yerler sorgulanır.", yanlislar: ["Telefonun GPS'ini açması söylenir.", "Hemen en yakın baz istasyonu sorgulanır.", "Polisi araması ve yerini onlara tarif etmesi istenir."] },
     { kategori: "Çağrı Yönetimi", soru: "Çağrı Açılış Algoritması'na göre, hastaya seslenildiğinde tepki vermiyorsa veya gözleri açık değilse hangi adıma geçilir?", cevap: "Derhal ambulans gönderilir.", yanlislar: ["Hasta yakınından nabız bakması istenir.", "Hastanın yüzüne su dökülmesi söylenir.", "Hastayı sarsarak uyandırmaya çalışması söylenir."] },
@@ -535,7 +553,6 @@ const hamVeri = [
 
   // --- FONKSİYONLAR ---
 
-  // 1. MENÜYÜ OLUŞTUR
   function menuyuBaslat() {
     menuKonteyner.innerHTML = "";
     const kategoriler = [...new Set(hamVeri.map(item => item.kategori))].sort();
@@ -551,7 +568,6 @@ const hamVeri = [
     });
   }
 
-  // 2. SAYFA GEÇİŞLERİ
   function sayfayiGoster(sayfaId) {
     document.querySelectorAll('.sayfa').forEach(s => s.classList.remove('aktif'));
     document.getElementById(sayfaId).classList.add('aktif');
@@ -563,7 +579,6 @@ const hamVeri = [
     sayfayiGoster('sayfa-menu');
   }
 
-  // 3. FLASH KARTLAR
   function konuyuAc(konuAdi) {
     aktifListe = konuAdi === "Tüm Konular (Karışık)" ? [...hamVeri] : hamVeri.filter(item => item.kategori === konuAdi);
     listeyiKaristir(aktifListe);
@@ -596,7 +611,6 @@ const hamVeri = [
     else aktifIndex = (aktifIndex - 1 + aktifListe.length) % aktifListe.length;
   }
 
-  // 4. TEST MOTORU (Hem Tekil Hem Online)
   function listeyiKaristir(liste) {
     for (let i = liste.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -723,10 +737,13 @@ const hamVeri = [
     else finalPuanEl.style.color = '#c0392b';
   }
 
-  // --- ONLINE PLACEHOLDERLAR (Varsayılan olarak hata vermesin diye) ---
-  function baslatOnlineLobby() { alert("Online mod yükleniyor veya bağlantı yok."); }
-  function onlineOdaKur() { }
-  function onlineOdayaKatil() { }
+  // ONLINE PLACEHOLDERLAR
+  function baslatOnlineLobby() { 
+    if(window.onlineLobbyAc) window.onlineLobbyAc();
+    else alert("Online mod yükleniyor veya bağlantı yok. Lütfen bekleyin veya sayfayı yenileyin.");
+  }
+  function onlineOdaKur() { if(window.onlineOdaOlustur) window.onlineOdaOlustur(); }
+  function onlineOdayaKatil() { if(window.onlineOdayaKatil) window.onlineOdayaKatil(); }
 
   // BAŞLANGIÇ
   menuyuBaslat();
@@ -754,13 +771,13 @@ const hamVeri = [
     let myRole = null;
     let unsubscribeOyun = null;
 
-    // Global Window Fonksiyonlarını Ez (Override)
-    window.baslatOnlineLobby = function() {
+    // Global Fonksiyonları Ez
+    window.onlineLobbyAc = function() {
         document.querySelectorAll('.sayfa').forEach(s => s.classList.remove('aktif'));
         document.getElementById('sayfa-lobby').classList.add('aktif');
     };
 
-    window.onlineOdaKur = function() {
+    window.onlineOdaOlustur = function() {
         const randomKod = Math.floor(1000 + Math.random() * 9000).toString();
         currentRoomId = randomKod;
         myRole = 'host';
