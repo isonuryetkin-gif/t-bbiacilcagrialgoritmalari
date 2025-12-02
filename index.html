@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>112 Eğitim & Düello</title>
+<style>
+  :root {
+    --primary-color: #003366; 
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12; 
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --text-color: #2c3e50;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-size: 14px; 
+  }
+
+  /* --- HEADER --- */
+  .ust-bar {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  .ust-baslik {
+    font-weight: 800;
+    font-size: 13px;
+    max-width: 65%;
+    line-height: 1.2;
+    text-align: left;
+  }
+
+  .ust-imza {
+    font-size: 10px;
+    font-weight: 400;
+    text-align: right;
+    color: #bdc3c7;
+    line-height: 1.2;
+  }
+  .ust-imza strong {
+    color: white;
+    font-weight: 700;
+    display: block;
+  }
+
+  /* --- SAYFA YAPISI --- */
+  .sayfa {
+    flex: 1;
+    display: none; 
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .sayfa.aktif {
+    display: flex;
+  }
+
+  /* --- MENU --- */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .menu-item {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: transform 0.2s;
+    border-bottom: 3px solid var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 70px;
+  }
+
+  .menu-item:active { transform: scale(0.98); }
+  .menu-baslik { font-weight: 700; color: var(--primary-color); font-size: 13px; line-height: 1.2; }
+  .menu-sayi { font-size: 10px; color: #7f8c8d; margin-top: 3px; }
+
+  /* BUTONLAR */
+  .ana-btn {
+    width: 100%;
+    max-width: 600px;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: white;
+  }
+  .test-btn { background: linear-gradient(135deg, #3498db, #2980b9); }
+  .duello-btn { background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3); }
+  .ana-btn:active { transform: scale(0.98); }
+
+  /* --- ONLINE LOBBY --- */
+  .lobby-kutusu {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  .lobby-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 5px;
+    margin: 15px 0;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-weight: bold;
+    box-sizing: border-box;
+  }
+  .lobby-kod {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--primary-color);
+    letter-spacing: 5px;
+    margin: 20px 0;
+    background: #f0f2f5;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px dashed var(--primary-color);
+  }
+
+  /* --- FLASH KART TASARIMI --- */
+  .kart-sistemi-kapsayici {
+    width: 100%;
+    max-width: 600px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .konu-basligi {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .sahne {
+    width: 100%;
+    flex: 1;
+    perspective: 1000px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    min-height: 200px;
+  }
+
+  .kart {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,51,102,0.1);
+  }
+
+  .kart.cevrildi { transform: rotateY(180deg); }
+
+  .kart-yuzu {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 12px;
+    font-size: 15px;
+    line-height: 1.3;
+    user-select: none;
+    background: white;
+    overflow-y: auto;
+  }
+
+  .kart-on { border-top: 5px solid var(--primary-color); color: var(--primary-color); }
+  .kart-arka { background: var(--primary-color); color: white; transform: rotateY(180deg); border-top: 5px solid var(--accent-color); }
+  
+  .kart-on::before, .kart-arka::before {
+    position: absolute; top: 10px; left: 10px; font-size: 9px; font-weight: 800;
+    padding: 2px 5px; border-radius: 3px;
+  }
+  .kart-on::before { content: "SORU"; background: #f0f3f5; color: #95a5a6; }
+  .kart-arka::before { content: "CEVAP"; background: #fff; color: var(--primary-color); }
+
+  .kontrol-paneli {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 5px 0;
+  }
+
+  .btn {
+    background-color: white; color: var(--primary-color); border: 2px solid var(--primary-color);
+    padding: 8px 16px; border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 12px;
+  }
+  .geri-don-btn {
+    background: transparent; border: none; color: var(--primary-color); font-weight: 700;
+    display: flex; align-items: center; gap: 5px; cursor: pointer; padding: 5px 0; align-self: flex-start; font-size: 13px;
+  }
+
+  /* --- TEST MODU TASARIMI --- */
+  .test-container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+  }
+
+  .ilerleme-bar-kapsayici {
+    width: 100%;
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 2px;
+    flex-shrink: 0;
+  }
+  
+  .ilerleme-bar-dolgu {
+    height: 100%;
+    background-color: var(--success-color);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .test-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .skor-badge {
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .skor-sen { background: #e8f8f5; color: var(--success-color); }
+  .skor-rakip { background: #fdedec; color: var(--accent-color); }
+
+  .soru-kutusu {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid var(--warning-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 15px;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .siklar-listesi {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto; 
+    flex: 1;
+    padding-bottom: 10px;
+  }
+
+  .sik-btn {
+    background: white;
+    border: 1px solid #e0e0e0;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: left;
+    color: var(--text-color);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .sik-btn:active { transform: scale(0.98); background-color: #f9f9f9; }
+  .sik-btn.dogru { background-color: var(--success-color); color: white; border-color: var(--success-color); }
+  .sik-btn.yanlis { background-color: var(--accent-color); color: white; border-color: var(--accent-color); }
+  .sik-btn.pasif { pointer-events: none; opacity: 0.6; }
+
+  .sonuc-ekrani {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .sonuc-puan { font-size: 40px; font-weight: 800; color: var(--primary-color); }
+
+</style>
+</head>
+<body>
+
+<div class="ust-bar">
+  <div class="ust-baslik">TIBBİ ACİL ÇAĞRI ALGORİTMALARI<br>TEST VE BİLGİ KARTLARI</div>
+  <div class="ust-imza">
+    Hazırlayan:<br><strong>Onur Yetkin</strong>
+  </div>
+</div>
+
+<div id="sayfa-menu" class="sayfa aktif">
+  <button class="ana-btn test-btn" onclick="tekKisilikTestBaslat()">
+    <span>🧠</span> TEK KİŞİLİK TEST
+  </button>
+  <button class="ana-btn duello-btn" onclick="lobbySayfasiniAc()">
+    <span>⚔️</span> ONLİNE 2 KİŞİLİK TEST (Canlı)
+  </button>
+  
+  <div style="margin: 10px 0; text-align:center; color:#555; font-size:12px; border-top:1px solid #ddd; padding-top:10px; width:100%;">
+    veya konu bazlı kartları incele:
+  </div>
+  <div class="menu-grid" id="menuKonteyner"></div>
+</div>
+
+<div id="sayfa-kartlar" class="sayfa">
+  <div class="kart-sistemi-kapsayici">
+    <button class="geri-don-btn" onclick="menuyeDon()">&#8592; Menüye Dön</button>
+    <div class="konu-basligi" id="aktifKonuBasligi">GENEL</div>
+    <div class="sahne" onclick="kartCevir()">
+      <div class="kart" id="kartObjesi">
+        <div class="kart-yuzu kart-on"><div id="soruMetni">...</div></div>
+        <div class="kart-yuzu kart-arka"><div id="cevapMetni">...</div></div>
+      </div>
+    </div>
+    <div style="text-align: center; color:#95a5a6; font-size:11px; margin-bottom:5px;">Cevap için dokunun</div>
+    <div class="kontrol-paneli">
+      <button class="btn" onclick="degistir(-1)">&#8592; Geri</button>
+      <div class="sayac" id="sayacMetni">1 / 10</div>
+      <button class="btn" onclick="degistir(1)">İleri &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<div id="sayfa-lobby" class="sayfa">
+  <button class="geri-don-btn" onclick="menuyeDon()">&#8592; Menüye Dön</button>
+  <br>
+  <div class="lobby-kutusu">
+    <h3>ODA OLUŞTUR</h3>
+    <p style="font-size:12px; color:#777;">Bir oda kodu üret ve arkadaşına söyle.</p>
+    <button class="ana-btn duello-btn" onclick="odaOlustur()">KOD OLUŞTUR & BAŞLAT</button>
+  </div>
+  
+  <div style="margin: 20px; font-weight:bold; color:#ccc;">--- VEYA ---</div>
+
+  <div class="lobby-kutusu">
+    <h3>ODAYA KATIL</h3>
+    <p style="font-size:12px; color:#777;">Arkadaşının verdiği kodu gir.</p>
+    <input type="tel" id="odaKoduInput" class="lobby-input" placeholder="0000" maxlength="4">
+    <button class="ana-btn test-btn" onclick="odayaKatil()">KATIL & BAŞLAT</button>
+  </div>
+</div>
+
+<div id="sayfa-bekleme" class="sayfa">
+  <div class="lobby-kutusu">
+    <h3>ODA KODU</h3>
+    <div class="lobby-kod" id="gosterilenOdaKodu">...</div>
+    <p>Rakip bekleniyor...</p>
+    <div style="margin-top:20px;">
+        <div class="skor-badge skor-sen" id="beklemeDurum">Bağlantı kuruluyor...</div>
+    </div>
+  </div>
+</div>
+
+<div id="sayfa-test" class="sayfa">
+  <div class="test-container" id="testAlani">
+    <button class="geri-don-btn" onclick="testiBitir(true)">&#8592; Çıkış</button>
+    
+    <div class="ilerleme-bar-kapsayici">
+        <div class="ilerleme-bar-dolgu" id="ilerlemeBar"></div>
+    </div>
+
+    <div class="test-header">
+      <div class="skor-badge skor-sen">SEN: <span id="testDogruSayisi">0</span></div>
+      <div style="font-weight:700; color:#555; font-size:12px;">Soru: <span id="testSoruNo">1</span>/<span id="testToplamGosterge">10</span></div>
+      <div class="skor-badge skor-rakip" id="rakipSkorKutusu" style="display:none;">RAKİP: <span id="testRakipSkor">0</span></div>
+    </div>
+    
+    <div class="soru-kutusu" id="testSoruMetni">Soru Yükleniyor...</div>
+    <div class="siklar-listesi" id="testSiklar"></div>
+  </div>
+
+  <div class="sonuc-ekrani" id="sonucAlani">
+    <h2 id="sonucBaslik">Test Bitti!</h2>
+    <div class="sonuc-puan" id="finalPuan">%80</div>
+    <p id="sonucDetay">...</p>
+    <p id="sonucOnlineMesaj" style="font-weight:bold; color:#e74c3c;"></p>
+    <button class="test-baslat-btn" onclick="menuyeDon()">Ana Menü</button>
+  </div>
+</div>
+
+<script>
+  // --- VERİ SETİ (64 SORU) ---
+  const hamVeri = [
+    { kategori: "Çağrı Yönetimi", soru: "Çağrı Açılış Algoritması'na göre, çağrı alıcının teyit etmesi gereken iki temel bilgi nedir?", cevap: "Olay yeri adresi ve arayanın telefon numarası.", yanlislar: ["Hastanın adı ve soyadı.", "Olayın tıbbi detayı ve hasta yaşı.", "En yakın karakol ve itfaiye bilgisi."] },
+    { kategori: "Çağrı Yönetimi", soru: "Çağrı Açılış Algoritması'nda, arayan kişi adresini bilmiyorsa ona yardımcı olmak için hangi yöntemler sorgulanabilir?", cevap: "Posta adresi için fatura sorgulama, bilindik cami, market, okul, cadde, kavşak gibi yerler sorgulanır.", yanlislar: ["Telefonun GPS'ini açması söylenir.", "Hemen en yakın baz istasyonu sorgulanır.", "Polisi araması ve yerini onlara tarif etmesi istenir."] },
+    { kategori: "Çağrı Yönetimi", soru: "Çağrı Açılış Algoritması'na göre, hastaya seslenildiğinde tepki vermiyorsa veya gözleri açık değilse hangi adıma geçilir?", cevap: "Derhal ambulans gönderilir.", yanlislar: ["Hasta yakınından nabız bakması istenir.", "Hastanın yüzüne su dökülmesi söylenir.", "Hastayı sarsarak uyandırmaya çalışması söylenir."] },
+    { kategori: "Çağrı Yönetimi", soru: "Çağrı Açılış Algoritması'nda hastanın gözleri açık değilse veya uyanık değilse yapılması gereken eylem nedir?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Telefon kapatılıp 5 dakika sonra tekrar aranmalıdır.", "Hastanın uyumasına izin verilmelidir.", "Hasta yakınına ağrı kesici vermesi söylenmelidir."] },
+    { kategori: "Çağrı Yönetimi", soru: "Ambulans çıkışı yapıldıktan sonra arayana verilmesi gereken ilk talimat nedir?", cevap: "\"Ambulans yönlendiriyorum, hatta kalın lütfen.\"", yanlislar: ["\"Telefonu kapatıp ambulansı bekleyin.\"", "\"Hastayı kendi imkanlarınızla hastaneye götürün.\"", "\"Hemen dışarı çıkıp ambulansa el sallayın.\""] },
+    { kategori: "Çağrı Yönetimi", soru: "Çağrı açılışında, birden çok hasta/yaralı içeren bir olay varsa ne yapılmalıdır?", cevap: "Hasta/yaralı sayısına uygun sayıda ambulans gönderilmelidir.", yanlislar: ["Tek bir ambulans gönderilip durumun teyit edilmesi beklenir.", "Polis ekiplerinin olay yerine varması beklenir.", "Sadece durumu en ağır olan için ambulans gönderilir."] },
+    { kategori: "Solunum Acilleri", soru: "Arayan kişi hastanın kendisiyse ve konuşmada zorlanma veya solunum sıkıntısı varsa, gidilmesi gereken bir sonraki algoritma hangisidir?", cevap: "Solunum Sıkıntısı Algoritması.", yanlislar: ["Göğüs Ağrısı Algoritması.", "Alerji Algoritması.", "Zehirlenme Algoritması."] },
+    { kategori: "Solunum Acilleri", soru: "Solunum Sıkıntısı Algoritması'nda, hastanın normal konuşamaması veya konuşurken nefesinin yetmemesi durumunda ne yapılmalıdır?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Hastaya bir bardak su içirilmelidir.", "Derin nefes alıp vermesi telkin edilmelidir.", "Telefon kapatılıp dinlenmesi söylenmelidir."] },
+    { kategori: "Solunum Acilleri", soru: "Nefes alıp verirken hırıltı veya havlar gibi öksürük gibi sesler duyuluyorsa, Solunum Sıkıntısı Algoritması'na göre hangi aksiyon alınır?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Boğazına bakması istenir.", "Sıcak bir içecek verilmesi önerilir.", "Öksürük şurubu varsa içmesi söylenir."] },
+    { kategori: "Solunum Acilleri", soru: "Solunum sıkıntısı olan bir hastada morarma veya solukluk gibi renk değişikliği gözlemlenirse ne yapılmalıdır?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Camı açıp temiz hava alması sağlanır.", "Ayakları yukarı kaldırılır.", "Hastanın yüzü yıkanır."] },
+    { kategori: "Solunum Acilleri", soru: "Solunum sıkıntısına göğüs ağrısı eşlik ediyorsa, hangi algoritmaya geçiş yapılır?", cevap: "Göğüs Ağrısı Algoritması'na geçilir.", yanlislar: ["Travma Algoritması'na geçilir.", "Arrest Algoritması'na geçilir.", "Koma Algoritması'na geçilir."] },
+    { kategori: "Solunum Acilleri", soru: "Solunum sıkıntısı aniden başladıysa ve hastanın bulunduğu alanda duman veya farklı bir koku varsa ne yapılmalıdır?", cevap: "Ambulans gönderilmeli ve KBRN sorgulaması yapılmalıdır.", yanlislar: ["Sadece ambulans gönderilir.", "İtfaiyeye haber verilip beklenir.", "Hastanın olay yerinde kalması söylenir."] },
+    { kategori: "Solunum Acilleri", soru: "Hava Yolu Tıkanıklığı (Erişkin) Algoritması'nda, bilinci açık hastaya uygulanan sırt vuruşu ve karın basısı kaçarlı seriler halinde devam ettirilir?", cevap: "5'erli seriler halinde (5 sırta vuruş, 5 Heimlich).", yanlislar: ["10'arlı seriler halinde.", "3 sırta vuruş, 3 karın basısı.", "Sadece Heimlich manevrası yapılır."] },
+    { kategori: "Solunum Acilleri", soru: "Erişkin bir hastanın hava yolu tıkanıklığı müdahalesi sırasında bilinci kapanırsa ne yapılır?", cevap: "Arrest CPR Algoritması'na geçilir.", yanlislar: ["Heimlich manevrasına yatarak devam edilir.", "Sırta vurmaya devam edilir.", "Şok pozisyonu verilir."] },
+    { kategori: "Solunum Acilleri", soru: "Yabancı cisim aspirasyonu nedeniyle bilinci kapanan ve nefes almayan bir hastaya CPR uygulanırken her 30 göğüs basısından sonra ne yapılmalıdır?", cevap: "Ağız içine bakılır, cisim görülüyorsa alınır ve sonra 2 nefes verilir.", yanlislar: ["Doğrudan 2 kurtarıcı nefes verilir.", "Heimlich manevrası denenir.", "Sadece kalp masajına devam edilir."] },
+    { kategori: "Solunum Acilleri", soru: "KOAH/Astım hastası solunum sıkıntısı çekiyorsa, arayana hangi talimat verilebilir?", cevap: "Nefes rahatlatıcı ilaçların ek doz verilmesi önerilebilir.", yanlislar: ["Aspirin çiğnemesi söylenir.", "Bol su içmesi söylenir.", "Düz bir zemine sırtüstü yatırılması söylenir."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Hastanın yaşam bulgusu yoksa, Çağrı Açılış Algoritması'ndan hangi algoritmaya geçilmelidir?", cevap: "Arrest CPR Algoritması.", yanlislar: ["Koma Algoritması.", "Şok Algoritması.", "Hava Yolu Algoritması."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Göğüs Ağrısı Algoritması'na göre, soğuk terlemesi olan bir hasta için yapılması gereken nedir?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Üzerini örtüp ısıtılmalıdır.", "Sıcak bir şeyler içirilmelidir.", "Yüzüne kolonya sürülmelidir."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Göğüs ağrısı olan bir hastada bulantı veya kusma varsa, hangi eylem gerçekleştirilmelidir?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Mide ilacı alması söylenir.", "Kusturulmaya çalışılır.", "Nane limon kaynatıp içmesi söylenir."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Göğüs ağrısına eşlik eden çarpıntı şikayeti durumunda takip edilecek prosedür nedir?", cevap: "Ambulans göndermek.", yanlislar: ["Hastanın ıkınması (Valsalva) söylenir.", "Soğuk su ile yüzünü yıkaması istenir.", "Derin nefes alıp tutması istenir."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Göğüs ağrısı olan hastanın ağrısı nefes alıp vermekle ya da hareketle değişiyorsa, çağrı kime aktarılmalıdır?", cevap: "Danışman hekime aktarılmalıdır.", yanlislar: ["Doğrudan kapatılmalıdır.", "Polise aktarılmalıdır.", "Psikolojik destek hattına yönlendirilmelidir."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Kalp, tansiyon gibi sürekli ilaç kullanımını gerektiren bir hastalığı olan ve göğüs ağrısı yaşayan bir hastaya ne yapılmalıdır?", cevap: "Ambulans gönderilir.", yanlislar: ["İlacını içip beklemesi söylenir.", "Aile hekimine gitmesi söylenir.", "Tansiyonunu ölçüp tekrar araması istenir."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Göğüs ağrısı olan bir hastaya ambulans gelene kadar verilmesi gereken en önemli talimatlardan biri nedir?", cevap: "Hastayı kesinlikle yürütmemek.", yanlislar: ["Oda içinde yürümesi söylenir.", "Merdiven inip kapıda beklemesi istenir.", "Egzersiz yapması söylenir."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Erişkin Arrest CPR Algoritması'nda kalp masajı için eller nasıl pozisyonlandırılır?", cevap: "Bir elin topuğu göğsün alt yarısının ortasına konur, diğer el üzerine kenetlenir.", yanlislar: ["Meme uçlarının tam ortasına konur.", "Göğüs kemiğinin en üst ucuna konur.", "Midenin üzerine baskı yapılır."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Erişkin CPR'ında etkili bir göğüs basısı için kompresyon derinliği ne kadar olmalıdır?", cevap: "Yaklaşık 5-6 cm.", yanlislar: ["2-3 cm.", "En az 8 cm.", "Göğüs kafesinin yarısı kadar."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Gebe (3. Trimester) Arrest CPR Algoritması'nda, kalp masajı sırasında rahmin ana damarlara basısını azaltmak için ne yapılır?", cevap: "Hastanın sağ kalçasının altına yastık konularak sağ tarafı yükseltilir veya bir kişi karnı sola doğru çeker.", yanlislar: ["Hasta tamamen yan çevrilerek masaj yapılır.", "Bacakları yukarı kaldırılır.", "Hasta yüzüstü yatırılır."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Göğüs ağrısı olan ve NTG (nitrogliserin) kullanan bir hastaya, ilacını alması ne zaman önerilebilir?", cevap: "Baş dönmesi veya bayılma hissi yoksa, doktorunun önerdiği şekilde kullanabilir.", yanlislar: ["Ağrı şiddetliyse 2 tane birden alması söylenir.", "Bayılma hissi varsa hemen alması söylenir.", "Kesinlikle ilaç almaması söylenir."] },
+    { kategori: "Kardiyojenik Aciller", soru: "Erişkin Arrest CPR algoritmasında, dakikada hedeflenen bası sayısı kaçtır?", cevap: "Dakikada 100-120 bası.", yanlislar: ["Dakikada 60-80 bası.", "Dakikada 80-100 bası.", "Dakikada 120-140 bası."] },
+    { kategori: "Nörolojik Aciller", soru: "Koma Algoritması'nda, bilinci kapalı bir hastanın solunumu kontrol edildiğinde nefes almadığı tespit edilirse hangi algoritmaya geçilmelidir?", cevap: "Arrest CPR Algoritması'na geçilmelidir.", yanlislar: ["Koma pozisyonu verilir.", "Şok pozisyonu verilir.", "Ağzına su verilmeye çalışılır."] },
+    { kategori: "Nörolojik Aciller", soru: "Bilinci kapalı ve nefes alan bir hastaya yardım gelene kadar verilmesi gereken pozisyon nedir?", cevap: "Hastayı yan yatırmak (Koma pozisyonu).", yanlislar: ["Sırtüstü yatırmak.", "Yüzüstü yatırmak.", "Oturtur pozisyona getirmek."] },
+    { kategori: "Nörolojik Aciller", soru: "Bilinci kapalı bir hastada kusma olması durumunda yapılması gereken ilk müdahale nedir?", cevap: "Hastanın başını yana çevirmek ve ağzındakileri bir bez yardımı ile almak.", yanlislar: ["Sırtına vurmak.", "Su içirmek.", "Dilini dışarı çekmek."] },
+    { kategori: "Nörolojik Aciller", soru: "Nöbet Algoritması'na göre, nöbet geçiren bir hastanın kilitlenmiş çenesini açmaya çalışmak doğru bir müdahale midir?", cevap: "Hayır, kilitlenmiş çene açılmaya çalışılmamalıdır.", yanlislar: ["Evet, kaşık yardımıyla açılmalıdır.", "Evet, parmakla açılmalıdır.", "Evet, dilin ısırılmaması için zorlanmalıdır."] },
+    { kategori: "Nörolojik Aciller", soru: "Nöbet geçiren hastanın kendisine zarar vermesini önlemek için yapılması gereken temel müdahale nedir?", cevap: "Başının altına yastık gibi yumuşak bir malzeme koymak ve etraftaki tehlikeli eşyaları uzaklaştırmak.", yanlislar: ["Kollarını ve bacaklarını sıkıca tutmak.", "Üzerine su dökmek.", "Soğan koklatmak."] },
+    { kategori: "Nörolojik Aciller", soru: "Bilinci kapalı bir hastaya ilk yardım talimatlarına göre kesinlikle ne verilmemelidir?", cevap: "Yiyecek ve içecek.", yanlislar: ["Oksijen.", "Üzerine örtü.", "Yastık."] },
+    { kategori: "Nörolojik Aciller", soru: "Nöbet sonrası dönemde, hastanın solunumunu rahatlatmak ve sekresyon aspirasyonunu önlemek için hangi pozisyon önerilir?", cevap: "Yan yatış pozisyonu.", yanlislar: ["Sırtüstü pozisyon.", "Yarı oturur pozisyon.", "Şok pozisyonu."] },
+    { kategori: "Pediatrik Aciller", soru: "Hava Yolu Tıkanıklığı (Bebek) Algoritması'na göre, bebeğin renginde morarma veya solukluk varsa ne yapılmalıdır?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Bebek ters çevrilip ayaklarından sallanmalıdır.", "Bebeğin yüzüne üflenmelidir.", "Kusturulmaya çalışılmalıdır."] },
+    { kategori: "Pediatrik Aciller", soru: "Bilinci açık olan ve hava yolu tıkalı bir bebeğe (1-12 ay) yapılan ilk müdahale ... vuruşudur.", cevap: "5 sırt vuruşudur.", yanlislar: ["5 karın basısıdır (Heimlich).", "2 kurtarıcı nefestir.", "10 göğüs basısıdır."] },
+    { kategori: "Pediatrik Aciller", soru: "Bebekte hava yolu tıkanıklığı müdahalesinde 5 sırt vuruşundan sonra yabancı cisim çıkmazsa, bir sonraki adım nedir?", cevap: "İki parmakla göğsün tam ortasına 5 kez göğüs basısı uygulamak.", yanlislar: ["Karna bastırmak.", "Bebeği baş aşağı sallamak.", "Parmağı ağza sokup cismi aramak."] },
+    { kategori: "Pediatrik Aciller", soru: "Hava yolu tıkanıklığı olan bir bebek müdahale sırasında bilincini kaybederse hangi algoritmaya geçilmelidir?", cevap: "Arrest CPR Algoritması'na geçilmelidir.", yanlislar: ["Koma Algoritması'na.", "Şok Algoritması'na.", "Müdahale sonlandırılır."] },
+    { kategori: "Pediatrik Aciller", soru: "Hava Yolu Tıkanıklığı (Çocuk) Algoritması'nda, bilinci açık çocuğa arkadan sarılarak yapılan manevranın adı nedir?", cevap: "Karın basısı (Heimlich Manevrası).", yanlislar: ["Sırt vuruşu.", "CPR.", "Valsalva Manevrası."] },
+    { kategori: "Pediatrik Aciller", soru: "1-8 yaş arası bilinci açık bir çocukta hava yolu tıkanıklığı için yapılan karın basısı nereye uygulanır?", cevap: "Göbek deliğinin biraz üzerinde, midenin üzerine.", yanlislar: ["Göğüs kemiğinin üzerine.", "Göbeğin altına.", "Kaburgaların üzerine."] },
+    { kategori: "Pediatrik Aciller", soru: "Bebek (1-12 ay) Arrest CPR Algoritması'nda, solunum yoksa kalp masajından önce kaç kurtarıcı soluk verilir?", cevap: "5 kurtarıcı soluk verilir.", yanlislar: ["2 kurtarıcı soluk.", "Soluk verilmez, direkt masaja başlanır.", "10 kurtarıcı soluk."] },
+    { kategori: "Pediatrik Aciller", soru: "Bebek CPR'ında göğüs basısı için hangi parmaklar kullanılır ve nereye uygulanır?", cevap: "Orta ve yüzük parmağı, göğsün tam ortasına, meme uçları hizasına.", yanlislar: ["Baş parmak, göbeğin üzerine.", "Avuç içi, karnın ortasına.", "İşaret parmağı, boğaza."] },
+    { kategori: "Pediatrik Aciller", soru: "Bebek Arrest CPR Algoritması'na göre göğüs basısı derinliği ne kadar olmalıdır?", cevap: "Yaklaşık 4 cm (göğüs kafesinin 1/3'ü).", yanlislar: ["1-2 cm.", "En az 6 cm.", "Yüzeysel dokunma şeklinde."] },
+    { kategori: "Pediatrik Aciller", soru: "Bebek ve çocuk CPR'ında kalp masajı ve soluk oranı nedir?", cevap: "30 masaj / 2 soluk (30/2).", yanlislar: ["30 masaj / 5 soluk.", "15 masaj / 2 soluk.", "5 masaj / 1 soluk."] },
+    { kategori: "Pediatrik Aciller", soru: "Çocuk (1-8 Yaş) Arrest CPR Algoritması'nda kalp masajı için elin neresi kullanılır?", cevap: "Bir elin topuğu.", yanlislar: ["İki el kenetlenerek.", "Sadece parmaklar.", "Yumruk yapılarak."] },
+    { kategori: "Pediatrik Aciller", soru: "Çocuk CPR'ında göğüs basısı yaklaşık ne kadar derinlikte olmalıdır?", cevap: "Yaklaşık 5 cm (göğüs kafesinin 1/3'ü).", yanlislar: ["2-3 cm.", "7-8 cm.", "Göğüs kafesi tamamen çökecek kadar."] },
+    { kategori: "Pediatrik Aciller", soru: "Yüksek ateş nedeniyle nöbet geçiren (febril konvülsiyon) bir çocuğa nöbet sonrası ne önerilir?", cevap: "Çocuğun üzerini örtmemek, üzerindekileri çıkarmak ve soğutma önermek.", yanlislar: ["Sıcak duşa sokulması.", "Titremesin diye sıkıca sarılması.", "Aspirin verilmesi."] },
+    { kategori: "Travma", soru: "Bıçaklanma/Vurulma Algoritması'nda, olay yerinde şüpheli veya saldırgan hala yakındaysa arayana verilmesi gereken ilk talimat nedir?", cevap: "Güvenli bir yere gitmesi ve saldırgandan uzaklaşması.", yanlislar: ["Yaralıya hemen müdahale etmesi.", "Saldırganı yakalamaya çalışması.", "Olay yerinde sabit beklemesi."] },
+    { kategori: "Travma", soru: "Vücuda saplanmış kesici bir alet varsa, verilmesi gereken en önemli talimat nedir?", cevap: "Kesinlikle yerinden çıkarılmaması ve oynatılmaması.", yanlislar: ["Hemen çekip çıkarılması.", "Çıkarıp üzerine tampon basılması.", "Etrafının temizlenip çıkarılması."] },
+    { kategori: "Travma", soru: "Delici göğüs yaralanmalarında, yara üzerine hava geçirmeyen bir malzeme kapatılırken neden bir köşesi açık bırakılır?", cevap: "Nefes alışını bozmamak için (tansiyon pnömotoraksı önlemek amacıyla).", yanlislar: ["Yaranın hava almasını sağlamak için.", "Kanamanın dışarı akmasını kolaylaştırmak için.", "Malzeme yetmediği için."] },
+    { kategori: "Travma", soru: "Delici karın yaralanmasında dışarı çıkan organlar için doğru müdahale nedir?", cevap: "İçeri sokmaya çalışmamak, üzerine geniş ve nemli temiz bir bez örtmek.", yanlislar: ["Hemen içeri itilmesi.", "Üzerine kuru pamuk kapatılması.", "Açık bırakılıp kurumasının sağlanması."] },
+    { kategori: "Travma", soru: "Motorlu Araç Kazaları Algoritması'nda, yangın veya patlama riski olmadığı sürece yaralıya nasıl müdahale edilmelidir?", cevap: "Hasta hareket ettirilmemeli ve araç dışına çıkarılmaya çalışılmamalıdır.", yanlislar: ["Hemen araçtan çıkarılıp yere yatırılmalıdır.", "Kucaklanıp güvenli bölgeye taşınmalıdır.", "Yürütülmeye çalışılmalıdır."] },
+    { kategori: "Travma", soru: "Trafik kazası sonrası olay yeri güvenliği için reflektörler, kaza yapan aracın arkasına yaklaşık kaç metre mesafeye konulmalıdır?", cevap: "Yaklaşık 30 metre.", yanlislar: ["5 metre.", "100 metre.", "Aracın hemen dibine."] },
+    { kategori: "Travma", soru: "Kanama ve Kesiler Algoritması'nda, ayağa kalkınca baş dönmesi, soğuk terleme gibi şok bulguları varsa ne yapılmalıdır?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Ayran içirilmelidir.", "Yüzüne su çarpılmalıdır.", "Yürüyüp açılması söylenmelidir."] },
+    { kategori: "Travma", soru: "Kusma veya dışkılama ile birlikte kanaması olan bir hasta için hangi aksiyon alınır?", cevap: "Ambulans gönderilir.", yanlislar: ["İshal ilacı alması söylenir.", "Mide koruyucu alması söylenir.", "Bol su içip beklemesi söylenir."] },
+    { kategori: "Travma", soru: "Dış kanamalarda, kanayan yer üzerine temiz bir bezle baskı yapılmasına rağmen kanama durmazsa ne yapılmalıdır?", cevap: "Alttaki bezi kaldırmadan ikinci bir bez koyarak basınç artırılmalıdır.", yanlislar: ["Bez kaldırılıp yara kontrol edilmelidir.", "Yara yıkanıp tekrar basılmalıdır.", "Turnike uygulanıp gevşetilmelidir."] },
+    { kategori: "Travma", soru: "Motorlu araç kazasında, araç LPG'li ise ve biliniyorsa hangi ek güvenlik önlemi alınmalıdır?", cevap: "Gaz vanası kapatılmalıdır.", yanlislar: ["Depo kapağı açılmalıdır.", "Egzoz kapatılmalıdır.", "Camlar kapatılmalıdır."] },
+    { kategori: "Travma", soru: "Burun kanaması olan bir hastaya telefonda verilecek ilk yardım talimatı nedir?", cevap: "Burnun üst kısmından işaret ve baş parmaklarını kullanarak sıkması ve ağzına kan gelirse yutmayıp tükürmesi.", yanlislar: ["Başını geriye doğru yatırması.", "Burnuna pamuk tıkaması.", "Sırtüstü yatması."] },
+    { kategori: "Diğer Aciller", soru: "Saldırgan/Cinsel İstismar Algoritması'nda, kanıtların korunması için mağdura verilmesi gereken talimatlar nelerdir?", cevap: "Elbiselerini değiştirmemesi, banyo veya duşa girmemesi.", yanlislar: ["Hemen duş alıp temizlenmesi.", "Kıyafetlerini yıkayıp polise vermesi.", "Olay yerini temizlemesi."] },
+    { kategori: "Diğer Aciller", soru: "Karın Ağrısı Algoritması'na göre ağrının yeri göbek deliğinin üzerindeyse ne yapılmalıdır?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Sıcak su torbası konulmalıdır.", "Ağrı kesici alması söylenmelidir.", "Yemek yemesi söylenmelidir."] },
+    { kategori: "Diğer Aciller", soru: "Karın ağrısına sırt ve/veya göğüs ağrısı eşlik ediyorsa, hangi algoritmaya geçiş yapılması düşünülmelidir?", cevap: "Göğüs Ağrısı Algoritması.", yanlislar: ["Zehirlenme Algoritması.", "Travma Algoritması.", "Psikolojik Destek Algoritması."] },
+    { kategori: "Diğer Aciller", soru: "Elektrik Çarpması Algoritması'nda, hasta hala elektrik kaynağına temas ediyorsa, müdahale eden kişiye verilecek ilk ve en önemli talimat nedir?", cevap: "Hastaya dokunmaması ve elektriği güvenli şekilde ana güç kaynağından kesmesi.", yanlislar: ["Hastayı tutup çekmesi.", "Üzerine su dökmesi.", "Hastanın elini tutarak nabız bakması."] },
+    { kategori: "Diğer Aciller", soru: "Alerji/Böcek Sokmaları Algoritması'nda, hastanın yüzünde ve boynunda şişlik olması durumunda ne yapılmalıdır?", cevap: "Ambulans gönderilmelidir.", yanlislar: ["Soğuk uygulama yapıp beklemesi söylenir.", "Alerji ilacı varsa içmesi ve yatması söylenir.", "Limon sürülmesi söylenir."] },
+    { kategori: "Diğer Aciller", soru: "Arı sokması durumunda, arının iğnesini çıkarmak için doğru yöntem nedir?", cevap: "Fırça yardımıyla süpürür gibi uzaklaştırmak, cımbızla tutup çekmeye çalışmamak.", yanlislar: ["İki parmakla sıkıp çıkarmak.", "Cımbızla çekmek.", "İğneyi içeri itmek."] },
+    { kategori: "Diğer Aciller", soru: "Zehirlenme Algoritması'na göre, bilinci açık ve yutkunabilen bir hastanın ağzı zehirli madde ile temas ettiyse ne yapılması önerilir?", cevap: "Ağzını bol su ile çalkalaması ve tükürmesi söylenir.", yanlislar: ["Kusturulması söylenir.", "Süt içirilmesi söylenir.", "Limon suyu içirilmesi söylenir."] },
+    { kategori: "Diğer Aciller", soru: "Zehirlenme vakalarında, hastayı kusturmaya çalışmak doğru bir ilk yardım uygulaması mıdır?", cevap: "Hayır, hasta kusturulmaya çalışılmamalıdır.", yanlislar: ["Evet, zehri atması için mutlaka kusturulmalıdır.", "Evet, sadece sıvı zehirlenmelerinde kusturulmalıdır.", "Evet, tuzlu su verilerek kusturulmalıdır."] },
+    { kategori: "Diğer Aciller", soru: "Ambulans gönderildikten sonra zehirlenme vakasıyla ilgili hangi üç temel bilgi sorgulanmalıdır?", cevap: "Ne alındığı, ne kadar alındığı ve ne zaman alındığı sorgulanmalıdır.", yanlislar: ["Markası, fiyatı ve rengi.", "Tadı, kokusu ve ısısı.", "Kimin aldığı, nereden aldığı ve niçin aldığı."] }
+  ];
+
+  // --- DEĞİŞKENLER ---
+  const sayfaMenu = document.getElementById('sayfa-menu');
+  const sayfaKartlar = document.getElementById('sayfa-kartlar');
+  const sayfaTest = document.getElementById('sayfa-test');
+  const sayfaLobby = document.getElementById('sayfa-lobby');
+  const sayfaBekleme = document.getElementById('sayfa-bekleme');
+  const menuKonteyner = document.getElementById('menuKonteyner');
+  
+  const kart = document.getElementById('kartObjesi');
+  const soruDiv = document.getElementById('soruMetni');
+  const cevapDiv = document.getElementById('cevapMetni');
+  const sayacDiv = document.getElementById('sayacMetni');
+  const aktifKonuBasligi = document.getElementById('aktifKonuBasligi');
+
+  let aktifListe = [];
+  let aktifIndex = 0;
+  let testSorulari = [];
+  let testSuankiSoruIndex = 0;
+  let dogruSayisi = 0;
+  let yanlisSayisi = 0;
+  let isMultiplayer = false;
+  let testCevaplandi = false;
+
+  // --- TEMEL FONKSİYONLAR ---
+  function menuyuBaslat() {
+    menuKonteyner.innerHTML = "";
+    const kategoriler = [...new Set(hamVeri.map(item => item.kategori))].sort();
+    kategoriler.unshift("Tüm Konular (Karışık)");
+
+    kategoriler.forEach(kat => {
+      let soruSayisi = kat === "Tüm Konular (Karışık)" ? hamVeri.length : hamVeri.filter(item => item.kategori === kat).length;
+      const btn = document.createElement('div');
+      btn.className = 'menu-item';
+      btn.onclick = () => konuyuAc(kat);
+      btn.innerHTML = `<div class="menu-baslik">${kat}</div><div class="menu-sayi">${soruSayisi} Soru</div>`;
+      menuKonteyner.appendChild(btn);
+    });
+  }
+
+  function konuyuAc(konuAdi) {
+    aktifListe = konuAdi === "Tüm Konular (Karışık)" ? [...hamVeri] : hamVeri.filter(item => item.kategori === konuAdi);
+    listeyiKaristir(aktifListe);
+    aktifIndex = 0;
+    aktifKonuBasligi.innerText = konuAdi.toUpperCase();
+    sayfayiGoster('sayfa-kartlar');
+    kartIceriginiYaz();
+  }
+
+  function sayfayiGoster(sayfaId) {
+    document.querySelectorAll('.sayfa').forEach(s => s.classList.remove('aktif'));
+    document.getElementById(sayfaId).classList.add('aktif');
+  }
+
+  function menuyeDon() {
+    if(window.durdurOnlineDinleme) window.durdurOnlineDinleme();
+    if(kart.classList.contains('cevrildi')) kart.classList.remove('cevrildi');
+    sayfayiGoster('sayfa-menu');
+  }
+
+  function kartIceriginiYaz() {
+    soruDiv.innerText = aktifListe[aktifIndex].soru;
+    cevapDiv.innerText = aktifListe[aktifIndex].cevap;
+    sayacDiv.innerText = (aktifIndex + 1) + " / " + aktifListe.length;
+  }
+  
+  function kartCevir() { kart.classList.toggle('cevrildi'); }
+  
+  function degistir(yon) {
+    if (kart.classList.contains('cevrildi')) {
+      kart.classList.remove('cevrildi');
+      setTimeout(() => { indexiGuncelle(yon); kartIceriginiYaz(); }, 200);
+    } else {
+      indexiGuncelle(yon);
+      kartIceriginiYaz();
+    }
+  }
+
+  function indexiGuncelle(yon) {
+    if (yon === 1) aktifIndex = (aktifIndex + 1) % aktifListe.length;
+    else aktifIndex = (aktifIndex - 1 + aktifListe.length) % aktifListe.length;
+  }
+
+  function listeyiKaristir(liste) {
+    for (let i = liste.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [liste[i], liste[j]] = [liste[j], liste[i]];
+    }
+  }
+
+  // --- TEK KİŞİLİK TEST ---
+  function tekKisilikTestBaslat() {
+    isMultiplayer = false;
+    document.getElementById('rakipSkorKutusu').style.display = 'none';
+    testSorulari = [...hamVeri];
+    listeyiKaristir(testSorulari);
+    testSorulari = testSorulari.slice(0, 10);
+    testBaslatGenel();
+  }
+
+  // --- ONLINE YER TUTUCULAR ---
+  function lobbySayfasiniAc() {
+    if(window.onlineLobbyAc) window.onlineLobbyAc();
+    else alert("Online mod yüklenemedi. İnternet bağlantınızı kontrol edin.");
+  }
+  function odaOlustur() { if(window.onlineOdaOlustur) window.onlineOdaOlustur(); }
+  function odayaKatil() { if(window.onlineOdayaKatil) window.onlineOdayaKatil(); }
+
+  // --- TEST MOTORU ---
+  function testBaslatGenel() {
+    testSuankiSoruIndex = 0;
+    dogruSayisi = 0;
+    yanlisSayisi = 0;
+    
+    document.getElementById('testAlani').style.display = 'flex';
+    document.getElementById('sonucAlani').style.display = 'none';
+    document.getElementById('testToplamGosterge').innerText = testSorulari.length;
+
+    if(isMultiplayer) {
+        document.getElementById('rakipSkorKutusu').style.display = 'flex';
+        document.getElementById('testRakipSkor').innerText = "0";
+    } else {
+        document.getElementById('rakipSkorKutusu').style.display = 'none';
+    }
+
+    puanlariGuncelle();
+    sayfayiGoster('sayfa-test');
+    testSorusuGetir();
+  }
+
+  function testSorusuGetir() {
+    testCevaplandi = false;
+    const soruData = testSorulari[testSuankiSoruIndex];
+    document.getElementById('testSoruMetni').innerText = soruData.soru;
+    document.getElementById('testSoruNo').innerText = testSuankiSoruIndex + 1;
+    
+    const yuzde = ((testSuankiSoruIndex) / testSorulari.length) * 100;
+    document.getElementById('ilerlemeBar').style.width = yuzde + "%";
+
+    let siklar = [soruData.cevap, ...soruData.yanlislar];
+    listeyiKaristir(siklar);
+
+    const siklarDiv = document.getElementById('testSiklar');
+    siklarDiv.innerHTML = "";
+    
+    siklar.forEach(sikMetni => {
+      const btn = document.createElement('button');
+      btn.className = 'sik-btn';
+      btn.innerText = sikMetni;
+      btn.onclick = () => cevabiKontrolEt(btn, sikMetni, soruData.cevap);
+      siklarDiv.appendChild(btn);
+    });
+  }
+
+  function cevabiKontrolEt(secilenBtn, secilenCevap, dogruCevap) {
+    if(testCevaplandi) return; 
+    testCevaplandi = true;
+
+    const tumButonlar = document.querySelectorAll('.sik-btn');
+
+    if(secilenCevap === dogruCevap) {
+      secilenBtn.classList.add('dogru');
+      dogruSayisi++;
+      if(isMultiplayer && window.updateFirebaseScore) window.updateFirebaseScore(dogruSayisi);
+    } else {
+      secilenBtn.classList.add('yanlis');
+      yanlisSayisi++;
+      tumButonlar.forEach(btn => {
+        if(btn.innerText === dogruCevap) btn.classList.add('dogru');
+      });
+    }
+
+    tumButonlar.forEach(btn => btn.classList.add('pasif'));
+    puanlariGuncelle();
+
+    setTimeout(() => {
+      if(testSuankiSoruIndex < testSorulari.length - 1) { 
+        testSuankiSoruIndex++;
+        testSorusuGetir();
+      } else {
+        document.getElementById('ilerlemeBar').style.width = "100%";
+        testiBitir(false);
+      }
+    }, 1200);
+  }
+
+  function puanlariGuncelle() {
+    document.getElementById('testDogruSayisi').innerText = dogruSayisi;
+    document.getElementById('testYanlisSayisi').innerText = yanlisSayisi;
+  }
+
+  function testiBitir(erkenCikis) {
+    if(erkenCikis) {
+      if(!confirm("Testten çıkmak istediğinize emin misiniz?")) return;
+      menuyeDon();
+      return;
+    }
+
+    document.getElementById('testAlani').style.display = 'none';
+    const sonucDiv = document.getElementById('sonucAlani');
+    sonucDiv.style.display = 'flex';
+    
+    const toplamSoru = testSorulari.length;
+    const basari = Math.round((dogruSayisi / toplamSoru) * 100);
+    
+    document.getElementById('finalPuan').innerText = `%${basari}`;
+    document.getElementById('sonucDetay').innerText = `${toplamSoru} Soruda ${dogruSayisi} Doğru`;
+    document.getElementById('sonucOnlineMesaj').innerText = "";
+
+    if(isMultiplayer && window.getFirebaseResult) {
+        window.getFirebaseResult(dogruSayisi);
+    }
+    
+    const finalPuanEl = document.getElementById('finalPuan');
+    if(basari >= 80) finalPuanEl.style.color = '#27ae60';
+    else if(basari >= 50) finalPuanEl.style.color = '#f39c12';
+    else finalPuanEl.style.color = '#c0392b';
+  }
+
+  menuyuBaslat();
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue, update, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDuwlo6IC7DPs5RvTrGp-C_WkzvzVOjC3E",
+    authDomain: "tibbiacilcagrialgoritmalari.firebaseapp.com",
+    databaseURL: "https://tibbiacilcagrialgoritmalari-default-rtdb.firebaseio.com",
+    projectId: "tibbiacilcagrialgoritmalari",
+    storageBucket: "tibbiacilcagrialgoritmalari.firebasestorage.app",
+    messagingSenderId: "583625805130",
+    appId: "1:583625805130:web:322faafb6468e1793d05b3",
+    measurementId: "G-QXDV2CM027"
+  };
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let currentRoomId = null;
+    let myRole = null;
+    let unsubscribeOyun = null;
+
+    // Global Fonksiyonları Bağla
+    window.onlineLobbyAc = function() {
+        document.querySelectorAll('.sayfa').forEach(s => s.classList.remove('aktif'));
+        document.getElementById('sayfa-lobby').classList.add('aktif');
+    };
+
+    window.onlineOdaOlustur = function() {
+        const randomKod = Math.floor(1000 + Math.random() * 9000).toString();
+        currentRoomId = randomKod;
+        myRole = 'host';
+
+        const soruIndexleri = [];
+        while(soruIndexleri.length < 10){
+            const r = Math.floor(Math.random() * hamVeri.length);
+            if(soruIndexleri.indexOf(r) === -1) soruIndexleri.push(r);
+        }
+
+        set(ref(db, 'games/' + currentRoomId), {
+            status: 'waiting',
+            questions: soruIndexleri,
+            hostScore: 0,
+            joinerScore: 0,
+            createdAt: Date.now()
+        }).then(() => {
+            document.querySelectorAll('.sayfa').forEach(s => s.classList.remove('aktif'));
+            document.getElementById('sayfa-bekleme').classList.add('aktif');
+            document.getElementById('gosterilenOdaKodu').innerText = currentRoomId;
+            document.getElementById('beklemeDurum').innerText = "Rakip Bekleniyor...";
+            baslaOdaDinlemeye();
+        });
+    };
+
+    window.onlineOdayaKatil = function() {
+        const girilenKod = document.getElementById('odaKoduInput').value;
+        if(girilenKod.length !== 4) { alert("Lütfen 4 haneli kodu giriniz."); return; }
+        
+        currentRoomId = girilenKod;
+        myRole = 'joiner';
+
+        get(ref(db, 'games/' + currentRoomId)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                if(data.status !== 'waiting') {
+                    alert("Bu oyun başlamış."); return;
+                }
+                update(ref(db, 'games/' + currentRoomId), {
+                    status: 'playing',
+                    joinerJoined: true
+                }).then(() => {
+                    if(data.questions) {
+                        isMultiplayer = true;
+                        testSorulari = data.questions.map(idx => hamVeri[idx]);
+                        baslaOdaDinlemeye();
+                        testBaslatGenel();
+                    }
+                });
+            } else {
+                alert("Oda bulunamadı!");
+            }
+        });
+    };
+
+    window.updateFirebaseScore = function(score) {
+        const updateField = myRole === 'host' ? 'hostScore' : 'joinerScore';
+        update(ref(db, 'games/' + currentRoomId), { [updateField]: score });
+    };
+
+    window.getFirebaseResult = function(myScore) {
+        get(ref(db, 'games/' + currentRoomId)).then((snapshot) => {
+            const data = snapshot.val();
+            let rakipPuan = 0;
+            if(myRole === 'host') rakipPuan = data.joinerScore || 0;
+            else rakipPuan = data.hostScore || 0;
+
+            let mesaj = "";
+            if(myScore > rakipPuan) mesaj = "TEBRİKLER! KAZANDIN 🏆";
+            else if(myScore < rakipPuan) mesaj = "MAALESEF KAYBETTİN 😔";
+            else mesaj = "DOSTLUK KAZANDI 🤝";
+            
+            document.getElementById('sonucOnlineMesaj').innerText = `Rakip: ${rakipPuan} Doğru\n${mesaj}`;
+        });
+    };
+
+    window.durdurOnlineDinleme = function() {
+        if(unsubscribeOyun) { unsubscribeOyun(); unsubscribeOyun = null; }
+    };
+
+    function baslaOdaDinlemeye() {
+        const gameRef = ref(db, 'games/' + currentRoomId);
+        unsubscribeOyun = onValue(gameRef, (snapshot) => {
+            const data = snapshot.val();
+            if(!data) return;
+
+            if(myRole === 'host' && data.status === 'playing' && document.getElementById('sayfa-bekleme').classList.contains('aktif')) {
+                if(data.questions) {
+                    isMultiplayer = true;
+                    testSorulari = data.questions.map(idx => hamVeri[idx]);
+                    testBaslatGenel();
+                }
+            }
+
+            if(document.getElementById('sayfa-test').classList.contains('aktif') && isMultiplayer) {
+                let rakipSkor = 0;
+                if(myRole === 'host') rakipSkor = data.joinerScore || 0;
+                else rakipSkor = data.hostScore || 0;
+                document.getElementById('testRakipSkor').innerText = rakipSkor;
+            }
+        });
+    }
+
+  } catch(e) {
+    console.log("Firebase bağlantı hatası (Offline mod devam ediyor):", e);
+  }
+</script>
+</body>
+</html>
