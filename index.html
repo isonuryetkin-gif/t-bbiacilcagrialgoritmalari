@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>112 Eğitim & Düello</title>
+<title>112 Online Düello & Eğitim</title>
 <style>
   :root {
     --primary-color: #003366; 
@@ -368,10 +368,10 @@
 </div>
 
 <div id="sayfa-menu" class="sayfa aktif">
-  <button class="ana-btn test-btn" onclick="tekKisilikTestBaslat()">
+  <button class="ana-btn test-btn" onclick="window.tekKisilikTestBaslat()">
     <span>🧠</span> TEK KİŞİLİK TEST
   </button>
-  <button class="ana-btn duello-btn" onclick="lobbySayfasiniAc()">
+  <button class="ana-btn duello-btn" onclick="window.lobbySayfasiniAc()">
     <span>⚔️</span> ONLİNE 2 KİŞİLİK TEST (Canlı)
   </button>
   
@@ -383,9 +383,9 @@
 
 <div id="sayfa-kartlar" class="sayfa">
   <div class="kart-sistemi-kapsayici">
-    <button class="geri-don-btn" onclick="menuyeDon()">&#8592; Menüye Dön</button>
+    <button class="geri-don-btn" onclick="window.menuyeDon()">&#8592; Menüye Dön</button>
     <div class="konu-basligi" id="aktifKonuBasligi">GENEL</div>
-    <div class="sahne" onclick="kartCevir()">
+    <div class="sahne" onclick="window.kartCevir()">
       <div class="kart" id="kartObjesi">
         <div class="kart-yuzu kart-on"><div id="soruMetni">...</div></div>
         <div class="kart-yuzu kart-arka"><div id="cevapMetni">...</div></div>
@@ -393,20 +393,20 @@
     </div>
     <div style="text-align: center; color:#95a5a6; font-size:11px; margin-bottom:5px;">Cevap için dokunun</div>
     <div class="kontrol-paneli">
-      <button class="btn" onclick="degistir(-1)">&#8592; Geri</button>
+      <button class="btn" onclick="window.degistir(-1)">&#8592; Geri</button>
       <div class="sayac" id="sayacMetni">1 / 10</div>
-      <button class="btn" onclick="degistir(1)">İleri &#8594;</button>
+      <button class="btn" onclick="window.degistir(1)">İleri &#8594;</button>
     </div>
   </div>
 </div>
 
 <div id="sayfa-lobby" class="sayfa">
-  <button class="geri-don-btn" onclick="menuyeDon()">&#8592; Menüye Dön</button>
+  <button class="geri-don-btn" onclick="window.menuyeDon()">&#8592; Menüye Dön</button>
   <br>
   <div class="lobby-kutusu">
     <h3>ODA OLUŞTUR</h3>
     <p style="font-size:12px; color:#777;">Bir oda kodu üret ve arkadaşına söyle.</p>
-    <button class="ana-btn duello-btn" onclick="odaOlustur()">KOD OLUŞTUR & BAŞLAT</button>
+    <button class="ana-btn duello-btn" onclick="window.odaOlustur()">KOD OLUŞTUR & BAŞLAT</button>
   </div>
   
   <div style="margin: 20px; font-weight:bold; color:#ccc;">--- VEYA ---</div>
@@ -415,7 +415,7 @@
     <h3>ODAYA KATIL</h3>
     <p style="font-size:12px; color:#777;">Arkadaşının verdiği kodu gir.</p>
     <input type="tel" id="odaKoduInput" class="lobby-input" placeholder="0000" maxlength="4">
-    <button class="ana-btn test-btn" onclick="odayaKatil()">KATIL & BAŞLAT</button>
+    <button class="ana-btn test-btn" onclick="window.odayaKatil()">KATIL & BAŞLAT</button>
   </div>
 </div>
 
@@ -432,7 +432,7 @@
 
 <div id="sayfa-test" class="sayfa">
   <div class="test-container" id="testAlani">
-    <button class="geri-don-btn" onclick="testiBitir(true)">&#8592; Çıkış</button>
+    <button class="geri-don-btn" onclick="window.testiBitir(true)">&#8592; Çıkış</button>
     
     <div class="ilerleme-bar-kapsayici">
         <div class="ilerleme-bar-dolgu" id="ilerlemeBar"></div>
@@ -453,12 +453,12 @@
     <div class="sonuc-puan" id="finalPuan">%80</div>
     <p id="sonucDetay">...</p>
     <p id="sonucOnlineMesaj" style="font-weight:bold; color:#e74c3c;"></p>
-    <button class="test-baslat-btn" onclick="menuyeDon()">Ana Menü</button>
+    <button class="test-baslat-btn" onclick="window.menuyeDon()">Ana Menü</button>
   </div>
 </div>
 
 <script>
-  // --- VERİ SETİ (64 SORU) ---
+  // --- VERİ SETİ (Global) ---
   const hamVeri = [
     { kategori: "Çağrı Yönetimi", soru: "Çağrı Açılış Algoritması'na göre, çağrı alıcının teyit etmesi gereken iki temel bilgi nedir?", cevap: "Olay yeri adresi ve arayanın telefon numarası.", yanlislar: ["Hastanın adı ve soyadı.", "Olayın tıbbi detayı ve hasta yaşı.", "En yakın karakol ve itfaiye bilgisi."] },
     { kategori: "Çağrı Yönetimi", soru: "Çağrı Açılış Algoritması'nda, arayan kişi adresini bilmiyorsa ona yardımcı olmak için hangi yöntemler sorgulanabilir?", cevap: "Posta adresi için fatura sorgulama, bilindik cami, market, okul, cadde, kavşak gibi yerler sorgulanır.", yanlislar: ["Telefonun GPS'ini açması söylenir.", "Hemen en yakın baz istasyonu sorgulanır.", "Polisi araması ve yerini onlara tarif etmesi istenir."] },
@@ -530,7 +530,7 @@
     { kategori: "Diğer Aciller", soru: "Ambulans gönderildikten sonra zehirlenme vakasıyla ilgili hangi üç temel bilgi sorgulanmalıdır?", cevap: "Ne alındığı, ne kadar alındığı ve ne zaman alındığı sorgulanmalıdır.", yanlislar: ["Markası, fiyatı ve rengi.", "Tadı, kokusu ve ısısı.", "Kimin aldığı, nereden aldığı ve niçin aldığı."] }
   ];
 
-  // --- DEĞİŞKENLER ---
+  // --- UI VE NAVİGASYON ---
   const sayfaMenu = document.getElementById('sayfa-menu');
   const sayfaKartlar = document.getElementById('sayfa-kartlar');
   const sayfaTest = document.getElementById('sayfa-test');
@@ -550,11 +550,11 @@
   let testSuankiSoruIndex = 0;
   let dogruSayisi = 0;
   let yanlisSayisi = 0;
-  let isMultiplayer = false;
   let testCevaplandi = false;
+  let isMultiplayer = false;
 
   // --- TEMEL FONKSİYONLAR ---
-  function menuyuBaslat() {
+  window.menuyuBaslat = function() {
     menuKonteyner.innerHTML = "";
     const kategoriler = [...new Set(hamVeri.map(item => item.kategori))].sort();
     kategoriler.unshift("Tüm Konular (Karışık)");
@@ -563,49 +563,49 @@
       let soruSayisi = kat === "Tüm Konular (Karışık)" ? hamVeri.length : hamVeri.filter(item => item.kategori === kat).length;
       const btn = document.createElement('div');
       btn.className = 'menu-item';
-      btn.onclick = () => konuyuAc(kat);
+      btn.onclick = () => window.konuyuAc(kat);
       btn.innerHTML = `<div class="menu-baslik">${kat}</div><div class="menu-sayi">${soruSayisi} Soru</div>`;
       menuKonteyner.appendChild(btn);
     });
-  }
+  };
 
-  function konuyuAc(konuAdi) {
+  window.konuyuAc = function(konuAdi) {
     aktifListe = konuAdi === "Tüm Konular (Karışık)" ? [...hamVeri] : hamVeri.filter(item => item.kategori === konuAdi);
     listeyiKaristir(aktifListe);
     aktifIndex = 0;
     aktifKonuBasligi.innerText = konuAdi.toUpperCase();
     sayfayiGoster('sayfa-kartlar');
     kartIceriginiYaz();
-  }
+  };
 
   function sayfayiGoster(sayfaId) {
     document.querySelectorAll('.sayfa').forEach(s => s.classList.remove('aktif'));
     document.getElementById(sayfaId).classList.add('aktif');
   }
 
-  function menuyeDon() {
+  window.menuyeDon = function() {
     if(window.durdurOnlineDinleme) window.durdurOnlineDinleme();
     if(kart.classList.contains('cevrildi')) kart.classList.remove('cevrildi');
     sayfayiGoster('sayfa-menu');
-  }
+  };
 
-  function kartIceriginiYaz() {
+  window.kartIceriginiYaz = function() {
     soruDiv.innerText = aktifListe[aktifIndex].soru;
     cevapDiv.innerText = aktifListe[aktifIndex].cevap;
     sayacDiv.innerText = (aktifIndex + 1) + " / " + aktifListe.length;
-  }
+  };
   
-  function kartCevir() { kart.classList.toggle('cevrildi'); }
+  window.kartCevir = function() { kart.classList.toggle('cevrildi'); };
   
-  function degistir(yon) {
+  window.degistir = function(yon) {
     if (kart.classList.contains('cevrildi')) {
       kart.classList.remove('cevrildi');
-      setTimeout(() => { indexiGuncelle(yon); kartIceriginiYaz(); }, 200);
+      setTimeout(() => { indexiGuncelle(yon); window.kartIceriginiYaz(); }, 200);
     } else {
       indexiGuncelle(yon);
-      kartIceriginiYaz();
+      window.kartIceriginiYaz();
     }
-  }
+  };
 
   function indexiGuncelle(yon) {
     if (yon === 1) aktifIndex = (aktifIndex + 1) % aktifListe.length;
@@ -620,25 +620,25 @@
   }
 
   // --- TEK KİŞİLİK TEST ---
-  function tekKisilikTestBaslat() {
+  window.tekKisilikTestBaslat = function() {
     isMultiplayer = false;
     document.getElementById('rakipSkorKutusu').style.display = 'none';
     testSorulari = [...hamVeri];
     listeyiKaristir(testSorulari);
     testSorulari = testSorulari.slice(0, 10);
-    testBaslatGenel();
-  }
+    window.testBaslatGenel();
+  };
 
   // --- ONLINE YER TUTUCULAR ---
-  function lobbySayfasiniAc() {
+  window.lobbySayfasiniAc = function() {
     if(window.onlineLobbyAc) window.onlineLobbyAc();
     else alert("Online mod yüklenemedi. İnternet bağlantınızı kontrol edin.");
   }
-  function odaOlustur() { if(window.onlineOdaOlustur) window.onlineOdaOlustur(); }
-  function odayaKatil() { if(window.onlineOdayaKatil) window.onlineOdayaKatil(); }
+  window.odaOlustur = function() { if(window.onlineOdaOlustur) window.onlineOdaOlustur(); }
+  window.odayaKatil = function() { if(window.onlineOdayaKatil) window.onlineOdayaKatil(); }
 
   // --- TEST MOTORU ---
-  function testBaslatGenel() {
+  window.testBaslatGenel = function() {
     testSuankiSoruIndex = 0;
     dogruSayisi = 0;
     yanlisSayisi = 0;
@@ -657,7 +657,7 @@
     puanlariGuncelle();
     sayfayiGoster('sayfa-test');
     testSorusuGetir();
-  }
+  };
 
   function testSorusuGetir() {
     testCevaplandi = false;
@@ -710,7 +710,7 @@
         testSorusuGetir();
       } else {
         document.getElementById('ilerlemeBar').style.width = "100%";
-        testiBitir(false);
+        window.testiBitir(false);
       }
     }, 1200);
   }
@@ -720,10 +720,10 @@
     document.getElementById('testYanlisSayisi').innerText = yanlisSayisi;
   }
 
-  function testiBitir(erkenCikis) {
+  window.testiBitir = function(erkenCikis) {
     if(erkenCikis) {
       if(!confirm("Testten çıkmak istediğinize emin misiniz?")) return;
-      menuyeDon();
+      window.menuyeDon();
       return;
     }
 
@@ -746,9 +746,12 @@
     if(basari >= 80) finalPuanEl.style.color = '#27ae60';
     else if(basari >= 50) finalPuanEl.style.color = '#f39c12';
     else finalPuanEl.style.color = '#c0392b';
-  }
+  };
 
-  menuyuBaslat();
+  // BAŞLANGIÇ
+  window.onload = function() {
+      menuyuBaslat();
+  };
 </script>
 
 <script type="module">
@@ -823,10 +826,10 @@
                     joinerJoined: true
                 }).then(() => {
                     if(data.questions) {
-                        isMultiplayer = true;
-                        testSorulari = data.questions.map(idx => hamVeri[idx]);
+                        window.isMultiplayer = true;
+                        window.testSorulari = data.questions.map(idx => hamVeri[idx]);
                         baslaOdaDinlemeye();
-                        testBaslatGenel();
+                        window.testBaslatGenel();
                     }
                 });
             } else {
@@ -867,14 +870,15 @@
             if(!data) return;
 
             if(myRole === 'host' && data.status === 'playing' && document.getElementById('sayfa-bekleme').classList.contains('aktif')) {
+                document.getElementById('sayfa-bekleme').classList.remove('aktif');
                 if(data.questions) {
-                    isMultiplayer = true;
-                    testSorulari = data.questions.map(idx => hamVeri[idx]);
-                    testBaslatGenel();
+                    window.testSorulari = data.questions.map(idx => hamVeri[idx]);
+                    window.isMultiplayer = true;
+                    window.testBaslatGenel();
                 }
             }
 
-            if(document.getElementById('sayfa-test').classList.contains('aktif') && isMultiplayer) {
+            if(document.getElementById('sayfa-test').classList.contains('aktif') && window.isMultiplayer) {
                 let rakipSkor = 0;
                 if(myRole === 'host') rakipSkor = data.joinerScore || 0;
                 else rakipSkor = data.hostScore || 0;
